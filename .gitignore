@@ -1,0 +1,48 @@
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Secrets and environment variables
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# Jupyter and editor files
+.ipynb_checkpoints/
+.vscode/
+
+# Logs and temporary files
+*.log
+.DS_Store
+Thumbs.db
+
+# Raw and intermediate datasets
+data/raw/*
+!data/raw/.gitkeep
+data/interim/*
+!data/interim/.gitkeep
+
+# Large generated data and trained model artifacts
+data/processed/*.parquet
+models/*.joblib
+
+
+# Generated analysis outputs
+data/processed/*
+
+# Keep selected useful project outputs
+!data/processed/forecast_model_comparison.png
+!data/processed/forecast_evaluation_report.txt
+!data/processed/customer_segmentation_report.txt
+!data/processed/inventory_analysis_report.txt
+!data/processed/chronological_churn_metrics.txt
+
+# Trained models
+models/
+
