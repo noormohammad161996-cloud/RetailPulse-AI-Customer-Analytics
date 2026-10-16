@@ -1,70 +1,84 @@
 # RetailPulse — AI-Powered Customer Analytics & Demand Forecasting
 
-## Access the Streamlit Dashboard
+**RetailPulse** is a retail analytics project developed as part of a data science internship with Zidio Development. It uses historical retail transaction data to explore sales trends, customer behavior, churn risk, demand forecasting, and inventory planning.
 
-Start the dashboard from your project root:
+## Dashboard Preview
 
-```bash
-python -m streamlit run app/inventory_dashboard.py
-```
+The project includes an interactive Streamlit dashboard for exploring historical product demand and preliminary inventory planning estimates.
 
-Once the application is running, open either URL from your machine:
+![RetailPulse Inventory Analytics Dashboard](docs/Images/inventory-dashboard.png)
 
-- **Local URL:** [http://localhost:8501/](http://localhost:8501/)
-- **Network URL:** [http://172.21.93.221:8501/](http://172.21.93.221:8501/)
+*Dashboard preview: inventory overview, category filters, product search, demand analysis, and planning estimates.*
 
-> **Note:** The dashboard must be running for these URLs to work. The network URL may change when your WSL environment restarts, and access from other devices depends on network and firewall configuration.
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Key Features](#key-features)
+- [Technology Stack](#technology-stack)
+- [Dataset](#dataset)
+- [Sales Forecasting](#sales-forecasting)
+- [Customer Analytics](#customer-analytics)
+- [Churn Prediction](#churn-prediction)
+- [Inventory Analytics Dashboard](#inventory-analytics-dashboard)
+- [Installation and Setup](#installation-and-setup)
+- [Project Structure](#project-structure)
+- [Limitations](#limitations)
+- [Project Status](#project-status)
+- [Author](#author)
 
 ## Project Overview
 
-RetailPulse is a retail analytics project that uses historical transaction data to analyze sales trends, segment customers, estimate customer churn risk, evaluate demand forecasting methods, and support inventory planning.
+RetailPulse explores how data science can support retail decision-making through:
 
-The project uses the UCI Online Retail II dataset.
+- Exploratory data analysis and data quality checks.
+- Monthly sales analysis and forecasting.
+- Customer segmentation using RFM analysis and K-Means.
+- Customer churn classification and evaluation.
+- Product demand variability analysis.
+- Preliminary inventory planning estimates.
+- Interactive dashboard development with Streamlit.
 
-## Objectives
+## Key Features
 
-- Explore and clean retail transaction data.
-- Analyze monthly sales trends.
-- Forecast monthly sales using baseline, seasonal-naive, and Prophet models.
-- Segment customers using RFM analysis and K-Means clustering.
-- Train and evaluate a customer churn classification model.
-- Estimate product demand variability and preliminary reorder points.
-- Display inventory analysis through a Streamlit dashboard.
+- Data preparation and transaction quality analysis.
+- Comparison of baseline, seasonal-naive, and Prophet forecasting models.
+- Customer segmentation and churn evaluation.
+- Product-level demand and variability metrics.
+- Interactive inventory category filters and product search.
+- Product detail inspection and filtered CSV export.
+- Reproducible Python scripts and project documentation.
 
 ## Technology Stack
 
-- **Language:** Python
-- **Data analysis:** pandas, NumPy
-- **Visualization:** Matplotlib, Seaborn
-- **Machine learning:** scikit-learn
-- **Forecasting:** Prophet
-- **Dashboard:** Streamlit
-- **Data formats:** CSV, Parquet, Excel
-- **Development environment:** VS Code and Ubuntu/WSL
+| Area | Technologies |
+|---|---|
+| Programming | Python |
+| Data analysis | pandas, NumPy |
+| Visualization | Matplotlib, Seaborn |
+| Machine learning | scikit-learn |
+| Forecasting | Prophet |
+| Dashboard | Streamlit |
+| Data formats | CSV, Parquet, Excel |
+| Development | VS Code, Ubuntu/WSL |
+| Version control | Git, GitHub |
 
 ## Dataset
 
-**Source:** UCI Online Retail II
+**Source:** UCI Online Retail II dataset.
 
-**Raw file:** `data/raw/online_retail_ii.xlsx`
+**Raw workbook:** `data/raw/online_retail_ii.xlsx`
 
-The workbook contains two sheets covering retail transactions from December 2009 to December 2011. The project identifies and removes verified overlap between the sheets.
+The source workbook contains two sheets of historical retail transactions covering December 2009 through December 2011, with overlapping records between the sheets.
 
-The sales-analysis dataset contains 1,019,654 rows after preliminary filtering.
+The project identifies and removes verified overlap before preparing the analysis datasets.
 
-## Work Completed
+The preliminary sales-analysis dataset contains **1,019,654 rows** after filtering transaction records.
 
-### 1. Data Preparation and Analysis
+The data is historical and does not represent current retail market conditions.
 
-- Inspected dataset quality and missing values.
-- Reviewed cancellation-style invoices and invalid quantities or prices.
-- Combined the source sheets and removed verified overlapping records.
-- Prepared a sales-analysis dataset.
-- Generated monthly sales summaries.
+## Sales Forecasting
 
-### 2. Sales Forecasting
-
-Compared three forecasting models on five test months, July–November 2011.
+Three forecasting approaches were compared on five test months, July–November 2011.
 
 | Model | MAE | WAPE |
 |---|---:|---:|
@@ -72,55 +86,154 @@ Compared three forecasting models on five test months, July–November 2011.
 | Prophet | 255,233.78 | 24.53% |
 | Mean baseline | 294,272.76 | 28.29% |
 
-The seasonal-naive model performed best in this preliminary comparison. More validation is required before using it in production.
+**Finding:** The seasonal-naive model performed best among these three models in the current five-month comparison.
 
-- Forecast chart: `data/processed/forecast_model_comparison.png`
-- Evaluation report: `data/processed/forecast_evaluation_report.txt`
+These results are preliminary. A broader evaluation across multiple forecast horizons and time periods is required before drawing production-level conclusions.
 
-### 3. Customer Analytics
+**Related outputs:**
 
-- Calculated customer recency, frequency, and monetary value (RFM).
-- Created rule-based customer segments.
-- Compared rule-based segments with K-Means clusters.
-- Evaluated K-Means cluster counts using silhouette scores.
+- Forecast comparison chart: `data/processed/forecast_model_comparison.png`
+- Forecast evaluation report: `data/processed/forecast_evaluation_report.txt`
+- Detailed metrics: `data/processed/forecast_detailed_metrics.csv`
 
-The highest silhouette score among the tested cluster counts was obtained with two clusters. The original target of six to eight segments has not yet been achieved by this K-Means evaluation.
+## Customer Analytics
 
-### 4. Churn Prediction
+The customer analytics workflow includes:
 
-- Created customer features and future-period churn labels.
-- Trained a logistic regression classifier.
-- Evaluated classification thresholds and chronological performance.
-- Saved model artifacts and evaluation reports.
+- Recency, Frequency, and Monetary (RFM) feature calculation.
+- Rule-based customer segmentation.
+- K-Means clustering and cluster visualization.
+- Comparison of segmentation approaches.
+- Silhouette-score evaluation for tested cluster counts.
 
-The chronological evaluation achieved a ROC-AUC of approximately 0.809. Limitations include customer overlap between cohorts and limited historical data.
+The highest silhouette score among the tested K-Means cluster counts was approximately **0.4188 for two clusters**. The original goal of six to eight segments has not yet been achieved by this evaluation.
 
-### 5. Inventory Analysis
+## Churn Prediction
 
-- Aggregated product demand by month.
-- Added calendar months with no recorded sales.
-- Estimated preliminary reorder points using assumed lead time and service level.
-- Flagged products with limited history or high demand variability.
-- Built a Streamlit dashboard for inventory exploration.
+The churn workflow includes customer feature preparation, future-period churn labels, logistic regression, threshold analysis, and chronological evaluation.
 
-These estimates are based on simplified assumptions. The source dataset does not provide actual stock levels or supplier lead times, so the results should not be treated as confirmed inventory recommendations.
+A chronological evaluation achieved a ROC-AUC of approximately **0.809**.
 
-## Important Limitations
+This is an initial result, not a production guarantee. Evaluation limitations include customer overlap between cohorts and limited historical observations.
 
-- Historical results do not guarantee future forecasting accuracy.
+## Inventory Analytics Dashboard
+
+The Streamlit dashboard provides an interactive view of historical product demand and preliminary inventory planning estimates.
+
+### Dashboard features
+
+- **Inventory overview:** Products displayed, total recorded units, high-variability products, and products with limited sales history.
+- **Inventory review filters:** Filter products by inventory review category.
+- **Demand risk-review filters:** Filter products by demand risk-review category.
+- **Product search:** Search using a product ID or product name.
+- **Product inspection:** Review average monthly recorded demand, demand coefficient of variation, months with recorded sales, estimated lead-time demand, approximate safety stock, and preliminary reorder point.
+- **Charts and tables:** Explore product category distributions and product-level planning metrics.
+- **CSV export:** Download the currently filtered inventory analysis data.
+- **Reset all filters:** Restore the default filter selections and clear the search.
+
+### Current inventory analysis
+
+The current dashboard displays **4,916 products** across 24 monthly periods from December 2009 through November 2011. December 2011 is excluded from this monthly analysis because the source month is incomplete.
+
+### Run the dashboard
+
+From the project root, activate your virtual environment and run:
+
+```bash
+python -m streamlit run app/inventory_dashboard.py
+```
+
+Open the local URL printed in your terminal, normally:
+
+`http://localhost:8501`
+
+The dashboard must be running for the local URL to work.
+
+## Installation and Setup
+
+### Prerequisites
+
+- Python installed.
+- Git installed.
+- VS Code or another Python editor.
+- Access to the project files and prepared datasets.
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/noormohammad161996-cloud/RetailPulse-AI-Customer-Analytics.git
+cd RetailPulse-AI-Customer-Analytics
+```
+
+### 2. Create a virtual environment
+
+```bash
+python -m venv .venv
+```
+
+Activate it in Ubuntu/WSL:
+
+```bash
+source .venv/bin/activate
+```
+
+### 3. Install dependencies
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+### 4. Start the dashboard
+
+```bash
+python -m streamlit run app/inventory_dashboard.py
+```
+
+**Note:** The dashboard expects its prepared input data to exist at the paths configured in the application. Ensure the required processed datasets are available before launching it.
+
+## Project Structure
+
+```text
+RetailPulse-AI-Customer-Analytics/
+├── app/
+│   └── inventory_dashboard.py
+├── data/
+│   ├── raw/
+│   └── processed/
+├── docs/
+│   ├── images/
+│   │   └── inventory-dashboard.png
+│   └── project_notes.md
+├── models/
+├── notebooks/
+├── requirements.txt
+└── README.md
+```
+
+This is a representative structure. Some generated data and model artifacts may be excluded from GitHub by `.gitignore`.
+
+## Limitations
+
 - The forecast comparison currently covers only five test months.
-- The dataset ends in December 2011 and does not represent current retail conditions.
-- Some transactions do not have customer IDs.
-- No recorded sales in a month do not necessarily mean true demand was zero.
-- Inventory estimates rely on simplified assumptions and are not production-ready.
+- Historical forecast performance does not guarantee future accuracy.
+- The source data ends in December 2011 and is not representative of current retail conditions.
+- Some transactions have missing customer IDs.
+- No recorded sales in a month do not necessarily indicate zero true demand.
+- Actual stock-on-hand levels, open purchase orders, supplier lead times, and confirmed stockout records are unavailable.
+- Inventory lead-time demand, safety stock, and reorder points use simplified assumptions.
+- Inventory risk categories are preliminary review flags, not confirmed stockout probabilities.
 - Project targets are goals, not achieved results unless supported by measured evaluation.
 
 ## Project Status
 
-Data preparation, exploratory analysis, preliminary forecasting comparisons, customer segmentation, churn evaluation, inventory analysis, and the Streamlit inventory dashboard have been implemented.
+Implemented components include data preparation, exploratory analysis, preliminary sales forecasting comparisons, RFM customer segmentation, churn model evaluation, inventory demand analysis, and an interactive Streamlit dashboard.
 
-Further work should focus on stronger validation, documentation, testing, and production readiness.
+The dashboard's category filters, product search, product inspection, reset behavior, and CSV download have passed manual functional checks.
+
+Further work should focus on stronger validation, automated testing, documentation, and improvements to model reliability and inventory assumptions.
 
 ## Author
 
-Developed as part of a data science internship project with Zidio Development.
+Developed as part of a data science internship project with **Zidio Development**.
+
+**GitHub:** [RetailPulse — AI Customer Analytics](https://github.com/noormohammad161996-cloud/RetailPulse-AI-Customer-Analytics)
