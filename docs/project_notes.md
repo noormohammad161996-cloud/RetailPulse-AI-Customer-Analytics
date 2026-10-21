@@ -92,3 +92,49 @@ Open the local URL printed in the terminal, normally:
 ## 10. Project Status
 
 The Inventory Analytics Dashboard is a working prototype. Its filters, product search, product inspection, reset behavior, and CSV export have passed manual checks. Further validation is required before its inventory estimates can be used for real operational decisions.
+## 11. Program 74: Transaction Outlier Analysis
+
+### Objective
+Analyze unusual transaction quantities and line values in the prepared retail sales dataset. The program identifies statistically unusual records for further investigation without deleting or modifying source data.
+
+### Input Dataset
+- File: `data/processed/sales_analysis.parquet`
+- Rows analyzed: 1,019,654
+- Rows skipped due to invalid numeric values: 0
+- Measures analyzed: `quantity` and `line_value`
+
+### Methods
+- **Interquartile Range (IQR):** Flags values below Q1 - 1.5 × IQR or above Q3 + 1.5 × IQR.
+- **Z-score:** Flags values whose absolute Z-score exceeds 3. Population standard deviation is used (`ddof=0`).
+
+### Results
+- Transactions flagged by at least one method: 99,939 (9.80%).
+- Quantity IQR flags: 53,630 (5.26%).
+- Quantity Z-score flags: 1,560 (0.15%).
+- Line-value IQR flags: 84,005 (8.24%).
+- Line-value Z-score flags: 1,555 (0.15%).
+- Maximum recorded quantity: 80,995.
+- Maximum recorded line value: 168,469.60.
+
+The combined flagged count represents the union of records flagged by any method, so a record flagged by multiple methods is counted once.
+
+### Generated Outputs
+- `data/processed/transaction_outlier_report.txt` — summary statistics, thresholds, counts, and limitations.
+- `data/processed/transaction_outlier_analysis.csv` — flagged records and their outlier indicators and Z-scores.
+- `data/processed/transaction_outlier_boxplots.png` — boxplots for the analyzed measures.
+
+### Validation
+- Python syntax compilation passed.
+- Program completed successfully against the prepared dataset.
+- Output CSV contained 99,939 rows and 15 columns.
+- All four outlier-flag totals matched the report.
+- The boxplot image was verified as a valid PNG measuring 1902 × 948 pixels.
+- Invoice IDs were checked with a string data type; no missing invoice IDs were found in the output.
+
+### Interpretation and Limitations
+- Statistical flags are investigation signals, not proof of incorrect transactions or fraud.
+- Large quantities or line values may represent legitimate bulk orders.
+- Strongly skewed retail data can affect raw Z-score behavior.
+- Business context is needed before excluding or correcting any flagged records.
+- The program does not establish whether transactions are fraudulent.
+- The source dataset is not modified by this analysis.
