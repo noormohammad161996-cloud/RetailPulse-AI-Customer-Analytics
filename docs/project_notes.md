@@ -327,3 +327,62 @@ Each successful run appends a new record while preserving existing history rows.
 - Repeated runs using unchanged input reports create additional history records, not independent evidence of changing data quality.
 - PSI bands are common heuristics, and statistically significant KS results do not by themselves prove model degradation.
 - The original input reports are not modified.
+
+## 16. Program 79: Monitoring Alert System
+
+### Objective
+
+Evaluate existing data quality and data drift results and generate standardized monitoring alerts. The program assigns PASS, WARNING, or FAIL statuses to help identify conditions requiring investigation.
+
+### Input Files
+
+- `data/processed/data_quality_results.csv` — quality check results from Program 76.
+- `data/processed/data_drift_results.csv` — drift metrics from Program 75.
+
+### Alert Rules
+
+**Data Quality**
+
+- FAIL: One or more quality checks have a FAIL status.
+- WARNING: Quality checks contain warnings or unknown statuses.
+- PASS: All quality checks pass without warnings or unknown statuses.
+
+**Data Drift**
+
+- PASS: PSI below 0.10.
+- WARNING: PSI from 0.10 to below 0.25.
+- FAIL: PSI at or above 0.25.
+- Missing or invalid PSI values generate a warning.
+
+These PSI thresholds are heuristic monitoring rules, not universal standards.
+
+### Execution Results
+
+- Quality checks evaluated: 15
+- Drift features evaluated: 3
+- Overall monitoring status: WARNING
+- Data quality alert: 1 WARNING
+- Data drift alerts: 3 PASS
+- FAIL alerts: 0
+
+### Feature-Level Results
+
+| Feature | PSI | Alert Status |
+|---|---:|---|
+| `quantity` | 0.0019 | PASS |
+| `unit_price` | 0.0186 | PASS |
+| `line_value` | 0.0092 | PASS |
+
+### Generated Outputs
+
+- `data/processed/monitoring_alert_results.csv` — structured alert records with timestamps, statuses, alert types, and messages.
+- `data/processed/monitoring_alert_report.txt` — readable monitoring report containing the overall status, individual alerts, and PSI thresholds.
+
+### Interpretation and Limitations
+
+- The overall WARNING indicates that a data-quality check requires investigation.
+- All three analyzed features have PSI values below 0.10.
+- An alert identifies a condition to investigate; it does not prove model failure or business impact.
+- The program evaluates existing monitoring outputs and does not rerun the underlying analyses.
+- The original input reports and source dataset are not modified.
+- Alerts are written to local files; email, Slack, and other external notifications are not configured.
