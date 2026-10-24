@@ -216,3 +216,40 @@ No missing values were found in the six required columns. The numeric checks, po
 - A warning does not automatically mean the dataset is unusable.
 - The checks cover selected quality rules and do not guarantee that every business issue has been detected.
 - The source dataset is read only and is not modified.
+
+## 14. Program 77: Data Quality and Drift Summary
+
+### Objective
+Combine the existing data quality and data drift results into a single monitoring summary without rerunning the underlying analyses.
+
+### Input Files
+- `data/processed/data_quality_results.csv` — quality check results from Program 76.
+- `data/processed/data_drift_results.csv` — drift metrics from Program 75.
+
+### Data Quality Summary
+- Total checks: 15
+- Passed checks: 14
+- Warning checks: 1
+- Failed checks: 0
+- Overall quality status: WARNING
+
+The warning relates to exact duplicate rows identified by Program 76. Those rows require investigation and are not automatically deleted.
+
+### Data Drift Summary
+- Features analyzed: 3
+- Features with PSI below 0.10: 3
+- Features with PSI from 0.10 to below 0.25: 0
+- Features with PSI at or above 0.25: 0
+- Features with statistically significant KS tests: 3
+
+The features analyzed are `quantity`, `unit_price`, and `line_value`. Their PSI values are below 0.10, while their KS tests are statistically significant at the 0.05 level.
+
+### Generated Outputs
+- `data/processed/quality_drift_summary.csv` — structured summary of quality and drift metrics.
+- `data/processed/quality_drift_summary_report.txt` — readable monitoring report with feature-level results and interpretation notes.
+
+### Interpretation and Limitations
+- PSI bands are common heuristics, not universal rules.
+- Statistical significance does not by itself prove meaningful business impact or model degradation.
+- This program summarizes existing outputs; it does not recalculate the original quality or drift analyses.
+- Source data and input reports are not modified.
