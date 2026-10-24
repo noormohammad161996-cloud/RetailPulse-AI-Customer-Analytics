@@ -92,22 +92,27 @@ Open the local URL printed in the terminal, normally:
 ## 10. Project Status
 
 The Inventory Analytics Dashboard is a working prototype. Its filters, product search, product inspection, reset behavior, and CSV export have passed manual checks. Further validation is required before its inventory estimates can be used for real operational decisions.
+
 ## 11. Program 74: Transaction Outlier Analysis
 
 ### Objective
+
 Analyze unusual transaction quantities and line values in the prepared retail sales dataset. The program identifies statistically unusual records for further investigation without deleting or modifying source data.
 
 ### Input Dataset
+
 - File: `data/processed/sales_analysis.parquet`
 - Rows analyzed: 1,019,654
 - Rows skipped due to invalid numeric values: 0
 - Measures analyzed: `quantity` and `line_value`
 
 ### Methods
-- **Interquartile Range (IQR):** Flags values below Q1 - 1.5 × IQR or above Q3 + 1.5 × IQR.
+
+- **Interquartile Range (IQR):** Flags values below Q1 − 1.5 × IQR or above Q3 + 1.5 × IQR.
 - **Z-score:** Flags values whose absolute Z-score exceeds 3. Population standard deviation is used (`ddof=0`).
 
 ### Results
+
 - Transactions flagged by at least one method: 99,939 (9.80%).
 - Quantity IQR flags: 53,630 (5.26%).
 - Quantity Z-score flags: 1,560 (0.15%).
@@ -119,11 +124,13 @@ Analyze unusual transaction quantities and line values in the prepared retail sa
 The combined flagged count represents the union of records flagged by any method, so a record flagged by multiple methods is counted once.
 
 ### Generated Outputs
+
 - `data/processed/transaction_outlier_report.txt` — summary statistics, thresholds, counts, and limitations.
 - `data/processed/transaction_outlier_analysis.csv` — flagged records and their outlier indicators and Z-scores.
 - `data/processed/transaction_outlier_boxplots.png` — boxplots for the analyzed measures.
 
 ### Validation
+
 - Python syntax compilation passed.
 - Program completed successfully against the prepared dataset.
 - Output CSV contained 99,939 rows and 15 columns.
@@ -132,6 +139,7 @@ The combined flagged count represents the union of records flagged by any method
 - Invoice IDs were checked with a string data type; no missing invoice IDs were found in the output.
 
 ### Interpretation and Limitations
+
 - Statistical flags are investigation signals, not proof of incorrect transactions or fraud.
 - Large quantities or line values may represent legitimate bulk orders.
 - Strongly skewed retail data can affect raw Z-score behavior.
@@ -142,9 +150,11 @@ The combined flagged count represents the union of records flagged by any method
 ## 12. Program 75: Data Drift Detection
 
 ### Objective
+
 Compare numerical feature distributions across two historical periods to identify potential data drift in retail transactions.
 
 ### Input Dataset
+
 - File: `data/processed/sales_analysis.parquet`
 - Features: `quantity`, `unit_price`, and `line_value`
 - Reference period: January 1–June 30, 2011
@@ -155,6 +165,7 @@ Compare numerical feature distributions across two historical periods to identif
 December 2011 was excluded because the month is incomplete.
 
 ### Methods
+
 - **Population Stability Index (PSI):** Compares distribution proportions using reference-period quantile bins.
 - **Kolmogorov–Smirnov (KS) two-sample test:** Compares the empirical distributions of numerical values. A p-value below 0.05 is marked statistically significant.
 
@@ -169,10 +180,12 @@ December 2011 was excluded because the month is incomplete.
 All PSI values are below 0.10, indicating little distribution shift under the common PSI heuristic. All three KS tests are statistically significant at the 0.05 level. With large samples, statistical significance can occur even when distribution differences are small.
 
 ### Generated Outputs
+
 - `data/processed/data_drift_report.txt` — methods, results, and limitations.
 - `data/processed/data_drift_results.csv` — feature-level comparison metrics.
 
 ### Interpretation and Limitations
+
 - Drift signals do not prove that model performance has degraded.
 - PSI thresholds are common heuristics, not universal rules.
 - Changes may reflect seasonality, promotions, or customer behavior.
@@ -182,14 +195,17 @@ All PSI values are below 0.10, indicating little distribution shift under the co
 ## 13. Program 76: Data Quality Monitoring
 
 ### Objective
-Monitor the quality of the processed retail sales dataset using automated validation checks. The program produces a text report and a CSV containing individual check results.
+
+Monitor the quality of the processed retail sales dataset using automated validation checks. The program generates a text report and a CSV containing individual check results.
 
 ### Input Dataset
+
 - File: `data/processed/sales_analysis.parquet`
 - Total rows: 1,019,654
 - Total columns: 10
 
 ### Quality Checks
+
 - Required columns are present.
 - Missing values in required columns are counted.
 - Exact duplicate rows are detected.
@@ -199,19 +215,23 @@ Monitor the quality of the processed retail sales dataset using automated valida
 - Line value is compared with quantity multiplied by unit price, allowing a tolerance of 0.01.
 
 ### Results
+
 - Total checks: 15
 - PASS: 14
 - WARNING: 1
+- FAIL: 0
 - Overall status: WARNING
 - Exact duplicate rows detected: 11,741
 
 No missing values were found in the six required columns. The numeric checks, positive-value checks, invoice-date check, and line-value consistency check passed.
 
 ### Generated Outputs
+
 - `data/processed/data_quality_report.txt` — readable quality summary and individual check details.
 - `data/processed/data_quality_results.csv` — structured results with check name, status, affected row count, and details.
 
 ### Interpretation and Limitations
+
 - Duplicate rows are flagged for investigation and are not automatically deleted.
 - A warning does not automatically mean the dataset is unusable.
 - The checks cover selected quality rules and do not guarantee that every business issue has been detected.
@@ -220,13 +240,16 @@ No missing values were found in the six required columns. The numeric checks, po
 ## 14. Program 77: Data Quality and Drift Summary
 
 ### Objective
+
 Combine the existing data quality and data drift results into a single monitoring summary without rerunning the underlying analyses.
 
 ### Input Files
+
 - `data/processed/data_quality_results.csv` — quality check results from Program 76.
 - `data/processed/data_drift_results.csv` — drift metrics from Program 75.
 
 ### Data Quality Summary
+
 - Total checks: 15
 - Passed checks: 14
 - Warning checks: 1
@@ -236,6 +259,7 @@ Combine the existing data quality and data drift results into a single monitorin
 The warning relates to exact duplicate rows identified by Program 76. Those rows require investigation and are not automatically deleted.
 
 ### Data Drift Summary
+
 - Features analyzed: 3
 - Features with PSI below 0.10: 3
 - Features with PSI from 0.10 to below 0.25: 0
@@ -245,11 +269,61 @@ The warning relates to exact duplicate rows identified by Program 76. Those rows
 The features analyzed are `quantity`, `unit_price`, and `line_value`. Their PSI values are below 0.10, while their KS tests are statistically significant at the 0.05 level.
 
 ### Generated Outputs
+
 - `data/processed/quality_drift_summary.csv` — structured summary of quality and drift metrics.
 - `data/processed/quality_drift_summary_report.txt` — readable monitoring report with feature-level results and interpretation notes.
 
 ### Interpretation and Limitations
+
 - PSI bands are common heuristics, not universal rules.
 - Statistical significance does not by itself prove meaningful business impact or model degradation.
 - This program summarizes existing outputs; it does not recalculate the original quality or drift analyses.
 - Source data and input reports are not modified.
+
+## 15. Program 78: Monitoring Run History
+
+### Objective
+
+Record quality and data drift monitoring metrics in a historical CSV file so that monitoring results can be compared across successive runs.
+
+### Input Files
+
+- `data/processed/data_quality_results.csv` — quality check results from Program 76.
+- `data/processed/data_drift_results.csv` — drift metrics from Program 75.
+
+### Recorded Metrics
+
+- UTC run timestamp
+- Total quality checks and counts of PASS, WARNING, FAIL, and unknown statuses
+- Overall quality status
+- Number of drift features analyzed
+- Counts of features in each PSI shift band
+- Number of features with statistically significant KS tests
+
+### Initial Run Results
+
+- Monitoring runs recorded: 1
+- Quality checks: 15
+- PASS: 14
+- WARNING: 1
+- FAIL: 0
+- Unknown statuses: 0
+- Overall quality status: WARNING
+- Drift features: 3
+- Features with PSI below 0.10: 3
+- Features with PSI from 0.10 to below 0.25: 0
+- Features with PSI at or above 0.25: 0
+- KS significant features: 3
+
+### Generated Output
+
+- `data/processed/monitoring_run_history.csv` — monitoring history maintained by this program.
+
+Each successful run appends a new record while preserving existing history rows. The program validates the existing history schema before writing.
+
+### Interpretation and Limitations
+
+- The history records summaries of the existing quality and drift outputs; it does not rerun those analyses.
+- Repeated runs using unchanged input reports create additional history records, not independent evidence of changing data quality.
+- PSI bands are common heuristics, and statistically significant KS results do not by themselves prove model degradation.
+- The original input reports are not modified.
