@@ -138,3 +138,43 @@ The combined flagged count represents the union of records flagged by any method
 - Business context is needed before excluding or correcting any flagged records.
 - The program does not establish whether transactions are fraudulent.
 - The source dataset is not modified by this analysis.
+
+## 12. Program 75: Data Drift Detection
+
+### Objective
+Compare numerical feature distributions across two historical periods to identify potential data drift in retail transactions.
+
+### Input Dataset
+- File: `data/processed/sales_analysis.parquet`
+- Features: `quantity`, `unit_price`, and `line_value`
+- Reference period: January 1–June 30, 2011
+- Comparison period: July 1–November 30, 2011
+- Reference rows: 198,451
+- Comparison rows: 265,062
+
+December 2011 was excluded because the month is incomplete.
+
+### Methods
+- **Population Stability Index (PSI):** Compares distribution proportions using reference-period quantile bins.
+- **Kolmogorov–Smirnov (KS) two-sample test:** Compares the empirical distributions of numerical values. A p-value below 0.05 is marked statistically significant.
+
+### Results
+
+| Feature | Reference mean | Comparison mean | PSI | KS p-value |
+|---|---:|---:|---:|---:|
+| Quantity | 10.7968 | 10.4589 | 0.0019 | 2.96703e-16 |
+| Unit price | 3.9798 | 3.6980 | 0.0186 | 2.35288e-201 |
+| Line value | 20.1698 | 19.6234 | 0.0092 | 9.11176e-102 |
+
+All PSI values are below 0.10, indicating little distribution shift under the common PSI heuristic. All three KS tests are statistically significant at the 0.05 level. With large samples, statistical significance can occur even when distribution differences are small.
+
+### Generated Outputs
+- `data/processed/data_drift_report.txt` — methods, results, and limitations.
+- `data/processed/data_drift_results.csv` — feature-level comparison metrics.
+
+### Interpretation and Limitations
+- Drift signals do not prove that model performance has degraded.
+- PSI thresholds are common heuristics, not universal rules.
+- Changes may reflect seasonality, promotions, or customer behavior.
+- The analysis does not train, evaluate, or modify a prediction model.
+- The source dataset is not modified.
