@@ -178,3 +178,41 @@ All PSI values are below 0.10, indicating little distribution shift under the co
 - Changes may reflect seasonality, promotions, or customer behavior.
 - The analysis does not train, evaluate, or modify a prediction model.
 - The source dataset is not modified.
+
+## 13. Program 76: Data Quality Monitoring
+
+### Objective
+Monitor the quality of the processed retail sales dataset using automated validation checks. The program produces a text report and a CSV containing individual check results.
+
+### Input Dataset
+- File: `data/processed/sales_analysis.parquet`
+- Total rows: 1,019,654
+- Total columns: 10
+
+### Quality Checks
+- Required columns are present.
+- Missing values in required columns are counted.
+- Exact duplicate rows are detected.
+- Numeric validity of quantity, unit price, and line value is checked.
+- Quantity and unit price must be positive.
+- Invoice dates must be valid.
+- Line value is compared with quantity multiplied by unit price, allowing a tolerance of 0.01.
+
+### Results
+- Total checks: 15
+- PASS: 14
+- WARNING: 1
+- Overall status: WARNING
+- Exact duplicate rows detected: 11,741
+
+No missing values were found in the six required columns. The numeric checks, positive-value checks, invoice-date check, and line-value consistency check passed.
+
+### Generated Outputs
+- `data/processed/data_quality_report.txt` — readable quality summary and individual check details.
+- `data/processed/data_quality_results.csv` — structured results with check name, status, affected row count, and details.
+
+### Interpretation and Limitations
+- Duplicate rows are flagged for investigation and are not automatically deleted.
+- A warning does not automatically mean the dataset is unusable.
+- The checks cover selected quality rules and do not guarantee that every business issue has been detected.
+- The source dataset is read only and is not modified.
