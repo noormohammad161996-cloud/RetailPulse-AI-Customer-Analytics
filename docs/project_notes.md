@@ -386,3 +386,50 @@ These PSI thresholds are heuristic monitoring rules, not universal standards.
 - The program evaluates existing monitoring outputs and does not rerun the underlying analyses.
 - The original input reports and source dataset are not modified.
 - Alerts are written to local files; email, Slack, and other external notifications are not configured.
+
+## 17. Program 80: Monitoring Dashboard
+
+### Objective
+Create a separate Streamlit dashboard that consolidates monitoring outputs from Programs 75–79 without replacing the existing RetailPulse inventory dashboard.
+
+### Application
+- `app/monitoring_dashboard.py` — Streamlit monitoring dashboard.
+- Navigation sections: Overview, Data Quality, Data Drift, Monitoring History, and Alert Center.
+- The Refresh data button reloads existing reports; it does not rerun Programs 75–79.
+
+### Input Reports
+- `data/processed/data_quality_results.csv`
+- `data/processed/data_drift_results.csv`
+- `data/processed/quality_drift_summary.csv`
+- `data/processed/monitoring_run_history.csv`
+- `data/processed/monitoring_alert_results.csv`
+- `data/processed/monitoring_alert_report.txt`
+
+### Verified Results
+
+| Metric | Result |
+|---|---:|
+| Quality checks | 15 |
+| PASS | 14 |
+| WARNING | 1 |
+| FAIL | 0 |
+| Drift features | 3 |
+| High-drift features | 0 |
+| Overall status | WARNING |
+
+### Feature-Level Drift Results
+
+| Feature | PSI | Alert Status |
+|---|---:|---|
+| `quantity` | 0.0019 | PASS |
+| `unit_price` | 0.0186 | PASS |
+| `line_value` | 0.0092 | PASS |
+
+The Alert Center reports one data-quality WARNING and three data-drift PASS alerts, with no FAIL alerts. The overall WARNING indicates that a quality check needs investigation; it does not by itself prove model failure or business impact.
+
+### Operational Notes and Limitations
+- The dashboard reads existing local reports and does not modify the source dataset.
+- Use Refresh data after rerunning the monitoring programs to load updated reports.
+- The dashboard requires the project environment and report files to be available locally.
+- PSI thresholds are heuristic monitoring rules, not universal standards.
+- Monitoring warnings still require investigation and interpretation.
