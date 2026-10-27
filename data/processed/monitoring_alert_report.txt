@@ -1,0 +1,24 @@
+============================================================
+RETAILPULSE - MONITORING ALERT REPORT
+============================================================
+Run timestamp (UTC): 2026-10-24T08:28:08.388033+00:00
+Overall status: WARNING
+Quality checks evaluated: 15
+Drift features evaluated: 3
+
+ALERT DETAILS
+------------------------------------------------------------
+[WARNING] DATA_QUALITY: 1 quality check(s) require investigation.
+[PASS] DRIFT:quantity: quantity has low data drift (PSI=0.0019).
+[PASS] DRIFT:unit_price: unit_price has low data drift (PSI=0.0186).
+[PASS] DRIFT:line_value: line_value has low data drift (PSI=0.0092).
+
+PSI THRESHOLDS
+PASS: PSI < 0.1
+WARNING: 0.1 <= PSI < 0.25
+FAIL: PSI >= 0.25
+
+Note: PSI thresholds are heuristic monitoring rules.
+An alert indicates a condition to investigate, not proof
+of model failure or business impact.
+============================================================

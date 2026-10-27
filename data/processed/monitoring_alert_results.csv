@@ -1,0 +1,5 @@
+run_timestamp_utc,alert_type,status,message
+2026-10-24T08:28:08.388033+00:00,DATA_QUALITY,WARNING,1 quality check(s) require investigation.
+2026-10-24T08:28:08.388033+00:00,DRIFT:quantity,PASS,quantity has low data drift (PSI=0.0019).
+2026-10-24T08:28:08.388033+00:00,DRIFT:unit_price,PASS,unit_price has low data drift (PSI=0.0186).
+2026-10-24T08:28:08.388033+00:00,DRIFT:line_value,PASS,line_value has low data drift (PSI=0.0092).

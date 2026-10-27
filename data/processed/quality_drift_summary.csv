@@ -1,0 +1,11 @@
+category,metric,value,status,details
+Data quality,Total quality checks,15,WARNING,Checks loaded from Program 76 results.
+Data quality,Passed checks,14,INFO,Checks with PASS status.
+Data quality,Warning checks,1,WARNING,Checks requiring investigation.
+Data quality,Failed checks,0,PASS,Checks marked FAIL.
+Data quality,Unknown status checks,0,PASS,Statuses not recognized by this summary.
+Data drift,Features analyzed,3,INFO,Features loaded from Program 75 results.
+Data drift,Features with little PSI shift,3,INFO,PSI below 0.10.
+Data drift,Features with moderate PSI shift,0,INFO,PSI from 0.10 to below 0.25.
+Data drift,Features with large PSI shift,0,INFO,PSI at or above 0.25.
+Data drift,KS significant features,3,INFO,KS p-value below 0.05.

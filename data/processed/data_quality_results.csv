@@ -1,0 +1,16 @@
+check_name,status,affected_rows,details
+Required columns,PASS,0,All required columns are present.
+Missing values: invoice_id,PASS,0,0 missing values in invoice_id.
+Missing values: product_id,PASS,0,0 missing values in product_id.
+Missing values: quantity,PASS,0,0 missing values in quantity.
+Missing values: invoice_date,PASS,0,0 missing values in invoice_date.
+Missing values: unit_price,PASS,0,0 missing values in unit_price.
+Missing values: line_value,PASS,0,0 missing values in line_value.
+Exact duplicate rows,WARNING,11741,"11,741 exact duplicate rows detected."
+Numeric validity: quantity,PASS,0,0 non-numeric values detected in quantity.
+Positive values: quantity,PASS,0,0 values are zero or negative.
+Numeric validity: unit_price,PASS,0,0 non-numeric values detected in unit_price.
+Positive values: unit_price,PASS,0,0 values are zero or negative.
+Numeric validity: line_value,PASS,0,0 non-numeric values detected in line_value.
+Valid invoice dates,PASS,0,0 missing or unparseable invoice dates.
+Line-value consistency,PASS,0,0 rows differ from quantity multiplied by unit price by more than 0.01.
