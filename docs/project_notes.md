@@ -433,3 +433,116 @@ The Alert Center reports one data-quality WARNING and three data-drift PASS aler
 - The dashboard requires the project environment and report files to be available locally.
 - PSI thresholds are heuristic monitoring rules, not universal standards.
 - Monitoring warnings still require investigation and interpretation.
+
+## 18. Task 82: Inventory Dashboard End-to-End Testing
+
+### Objective
+Validate the deployed RetailPulse Inventory Analytics dashboard, including its initial load, category filters, metric cards, charts, product search, product inspection, filter reset, and CSV export.
+
+### Application Under Test
+- Application: RetailPulse Inventory Analytics
+- Streamlit application file: `app/inventory_dashboard.py`
+- Source dataset: `data/processed/inventory_dashboard_with_risk_review.csv`
+- Deployment platform: Streamlit Community Cloud
+
+### Source Dataset Validation
+
+| Validation | Result |
+|---|---:|
+| Dataset rows | 4,916 |
+| Unique product IDs | 4,916 |
+| Total recorded units | 10,925,097 |
+| Dataset columns | 14 |
+| Missing values | 0 across all columns |
+
+### Baseline Metric Validation
+
+The four dashboard metric calculations were independently reproduced using pandas and matched the unfiltered dashboard values.
+
+| Metric | Expected value | Result |
+|---|---:|---|
+| Products displayed | 4,916 | PASS |
+| Total recorded units | 10,925,097 | PASS |
+| High-variability products | 201 | PASS |
+| Products with limited history | 1,140 | PASS |
+
+### Category Chart Source Counts
+
+Inventory review categories:
+
+| Category | Product count |
+|---|---:|
+| High demand variability | 2,881 |
+| Insufficient history | 1,140 |
+| Moderate demand variability | 774 |
+| Lower demand variability | 121 |
+| Total | 4,916 |
+
+Demand risk-review categories:
+
+| Category | Product count |
+|---|---:|
+| Lower relative variability | 2,882 |
+| Insufficient sales history | 1,140 |
+| Moderate-to-high demand variability | 693 |
+| High demand variability | 201 |
+| Total | 4,916 |
+
+Both category distributions were calculated from the source CSV and visually compared with the deployed dashboard charts. Chart validation was visual because exact numeric labels are not displayed on the bars.
+
+### Filtered Metric Validation
+
+The risk-review filter was tested with High demand variability deselected while all inventory review categories remained selected.
+
+| Metric | Expected value | Result |
+|---|---:|---|
+| Products displayed | 4,715 | PASS |
+| Total recorded units | 10,532,978 | PASS |
+| High-variability products | 0 | PASS |
+| Products with limited history | 1,140 | PASS |
+
+The filtered values matched both the independent pandas calculation and the observed dashboard results.
+
+### End-to-End Test Results
+
+| Test | Validation | Status |
+|---|---|---|
+| 1 | Initial dashboard load | PASS |
+| 2 | Inventory review category filter | PASS |
+| 3 | Demand risk-review category filter | PASS |
+| 4 | Multiple filters applied together | PASS |
+| 5 | Reset all filters | PASS |
+| 6 | Four metric cards and their calculations | PASS |
+| 7 | Inventory category chart rendering and labels | PASS |
+| 8 | Filter changes update displayed metrics and charts | PASS |
+| 9 | Empty-result handling | PASS |
+| 10 | Product search using a valid product ID | PASS |
+| 11 | Product inspection and displayed demand estimates | PASS |
+| 12 | Filtered CSV export | PASS |
+
+### Empty-Result Handling
+
+Searching for a non-existent product returned zero displayed products and zero values in the metric cards. The dashboard displayed a message indicating that no products matched the selected inventory filters instead of failing.
+
+### Product Inspection and CSV Export
+
+- Searching for product ID `10120` returned DOGGY RUBBER.
+- The product table and inspection section displayed product attributes and preliminary demand-planning estimates.
+- The CSV export downloaded successfully as `retailpulse_inventory_risk_review.csv`.
+
+### Reset Validation
+
+After clicking Reset all filters, the search field was cleared and the original baseline values returned:
+
+- 4,916 products displayed
+- 10,925,097 total recorded units
+- 201 high-variability products
+- 1,140 products with limited history
+
+### Conclusion
+
+The deployed Inventory Dashboard passed the reported end-to-end checks for data consistency, baseline and filtered metrics, category filtering, chart rendering, search, empty-result handling, product inspection, filter reset, and CSV export.
+
+The category chart counts were independently calculated from the source CSV; rendered bar values were checked visually rather than read from exact numeric labels.
+
+Inventory planning outputs remain preliminary estimates based on historical demand and assumptions. They do not represent confirmed stock levels or guaranteed reorder requirements.
