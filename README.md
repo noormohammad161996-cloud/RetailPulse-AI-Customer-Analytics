@@ -1,14 +1,14 @@
 # RetailPulse — AI-Powered Customer Analytics & Demand Forecasting
 
-**RetailPulse** is a retail analytics project developed as part of a data science internship with Zidio Development. It uses historical retail transaction data to explore sales trends, customer behavior, churn risk, demand forecasting, and inventory planning.
+RetailPulse is a retail analytics project developed as part of a data science internship with Zidio Development. It uses historical retail transaction data to explore sales trends, customer behavior, churn risk, demand forecasting, and inventory planning.
 
 ## Dashboard Preview
 
-The project includes an interactive Streamlit dashboard for exploring historical product demand and preliminary inventory planning estimates.
+The project includes two interactive Streamlit dashboards: an inventory analytics dashboard and a monitoring dashboard for data quality, feature drift, monitoring history, and alerts.
 
 ![RetailPulse Inventory Analytics Dashboard](docs/Images/inventory-dashboard.png)
 
-*Dashboard preview: inventory overview, category filters, product search, demand analysis, and planning estimates.*
+*Inventory dashboard preview: product overview, category filters, product search, demand analysis, and preliminary planning estimates.*
 
 ## Table of Contents
 
@@ -20,6 +20,7 @@ The project includes an interactive Streamlit dashboard for exploring historical
 - [Customer Analytics](#customer-analytics)
 - [Churn Prediction](#churn-prediction)
 - [Inventory Analytics Dashboard](#inventory-analytics-dashboard)
+- [Monitoring Dashboard](#monitoring-dashboard)
 - [Installation and Setup](#installation-and-setup)
 - [Project Structure](#project-structure)
 - [Limitations](#limitations)
@@ -32,21 +33,24 @@ RetailPulse explores how data science can support retail decision-making through
 
 - Exploratory data analysis and data quality checks.
 - Monthly sales analysis and forecasting.
-- Customer segmentation using RFM analysis and K-Means.
+- Customer segmentation using Recency, Frequency, and Monetary (RFM) analysis and K-Means.
 - Customer churn classification and evaluation.
 - Product demand variability analysis.
 - Preliminary inventory planning estimates.
-- Interactive dashboard development with Streamlit.
+- Interactive dashboards developed with Streamlit.
+- Data quality monitoring, drift analysis, monitoring history, and alert reporting.
 
 ## Key Features
 
 - Data preparation and transaction quality analysis.
 - Comparison of baseline, seasonal-naive, and Prophet forecasting models.
-- Customer segmentation and churn evaluation.
+- Rule-based customer segmentation and K-Means clustering.
+- Customer churn model evaluation.
 - Product-level demand and variability metrics.
-- Interactive inventory category filters and product search.
-- Product detail inspection and filtered CSV export.
-- Reproducible Python scripts and project documentation.
+- Inventory review filters, product search, and product inspection.
+- Filtered CSV export from the inventory dashboard.
+- Monitoring dashboard with quality checks, drift metrics, historical runs, and alerts.
+- Python scripts, notebooks, generated reports, and project documentation.
 
 ## Technology Stack
 
@@ -70,11 +74,11 @@ RetailPulse explores how data science can support retail decision-making through
 
 The source workbook contains two sheets of historical retail transactions covering December 2009 through December 2011, with overlapping records between the sheets.
 
-The project identifies and removes verified overlap before preparing the analysis datasets.
+The project identifies and removes verified overlap before preparing analytical datasets.
 
 The preliminary sales-analysis dataset contains **1,019,654 rows** after filtering transaction records.
 
-The data is historical and does not represent current retail market conditions.
+The dataset is historical and does not represent current retail market conditions.
 
 ## Sales Forecasting
 
@@ -88,7 +92,9 @@ Three forecasting approaches were compared on five test months, July–November 
 
 **Finding:** The seasonal-naive model performed best among these three models in the current five-month comparison.
 
-These results are preliminary. A broader evaluation across multiple forecast horizons and time periods is required before drawing production-level conclusions.
+These results are preliminary. The comparison uses a limited test period and does not establish that the project meets a 30-day forecasting requirement or a MAPE target.
+
+Further evaluation across multiple forecast horizons and time periods is needed before drawing production-level conclusions.
 
 **Related outputs:**
 
@@ -106,19 +112,23 @@ The customer analytics workflow includes:
 - Comparison of segmentation approaches.
 - Silhouette-score evaluation for tested cluster counts.
 
-The highest silhouette score among the tested K-Means cluster counts was approximately **0.4188 for two clusters**. The original goal of six to eight segments has not yet been achieved by this evaluation.
+The highest silhouette score among the tested K-Means configurations was approximately **0.4188 for two clusters**.
+
+The current rule-based approach defines five customer segments. The requirement for six to eight meaningful segments has not yet been demonstrated. A higher silhouette score does not necessarily mean that a clustering solution is more useful for business decisions.
 
 ## Churn Prediction
 
 The churn workflow includes customer feature preparation, future-period churn labels, logistic regression, threshold analysis, and chronological evaluation.
 
-A chronological evaluation achieved a ROC-AUC of approximately **0.809**.
+The chronological evaluation achieved a ROC-AUC of approximately **0.809**.
 
 This is an initial result, not a production guarantee. Evaluation limitations include customer overlap between cohorts and limited historical observations.
 
+The current result is below the project's stated ROC-AUC target of 0.88. Precision at the top 20% of predicted churn risk also requires separate verification.
+
 ## Inventory Analytics Dashboard
 
-The Streamlit dashboard provides an interactive view of historical product demand and preliminary inventory planning estimates.
+The inventory dashboard provides an interactive view of historical product demand and preliminary inventory planning estimates.
 
 ### Dashboard features
 
@@ -129,13 +139,15 @@ The Streamlit dashboard provides an interactive view of historical product deman
 - **Product inspection:** Review average monthly recorded demand, demand coefficient of variation, months with recorded sales, estimated lead-time demand, approximate safety stock, and preliminary reorder point.
 - **Charts and tables:** Explore product category distributions and product-level planning metrics.
 - **CSV export:** Download the currently filtered inventory analysis data.
-- **Reset all filters:** Restore the default filter selections and clear the search.
+- **Reset all filters:** Restore default filter selections and clear the search.
 
 ### Current inventory analysis
 
-The current dashboard displays **4,916 products** across 24 monthly periods from December 2009 through November 2011. December 2011 is excluded from this monthly analysis because the source month is incomplete.
+The dashboard displays **4,916 products** across 24 monthly periods from December 2009 through November 2011. December 2011 is excluded from this monthly analysis because the source month is incomplete.
 
-### Run the dashboard
+The current analysis identifies products for review using historical transaction quantities and simplified planning assumptions. It does not establish actual stock-on-hand levels or measured reductions in overstocking and understocking.
+
+### Run the inventory dashboard
 
 From the project root, activate your virtual environment and run:
 
@@ -143,11 +155,33 @@ From the project root, activate your virtual environment and run:
 python -m streamlit run app/inventory_dashboard.py
 ```
 
-Open the local URL printed in your terminal, normally:
+Open the local URL printed in the terminal, normally `http://localhost:8501`.
 
-`http://localhost:8501`
+## Monitoring Dashboard
 
-The dashboard must be running for the local URL to work.
+The monitoring dashboard presents previously generated reports about data quality, feature drift, monitoring history, and alerts.
+
+### Dashboard sections
+
+- **Overview:** Displays quality-check counts, drift metrics, overall assessment, and recent alerts.
+- **Data Quality:** Shows individual quality checks and their statuses, with filtering by status.
+- **Data Drift:** Displays feature-level Population Stability Index (PSI) values and heuristic drift classifications.
+- **Monitoring History:** Shows recorded monitoring runs and available historical quality counts.
+- **Alert Center:** Displays alert records and the complete alert report when available.
+
+The dashboard reads existing files from `data/processed/`. Its **Refresh data** button reloads the reports; it does not rerun the underlying monitoring pipeline.
+
+### Run the monitoring dashboard
+
+From the project root, activate the virtual environment and run:
+
+```bash
+python -m streamlit run app/monitoring_dashboard.py
+```
+
+Streamlit prints the local URL where the dashboard is available. If port 8501 is already occupied by the inventory dashboard, Streamlit normally selects another available port.
+
+**Prerequisites:** The monitoring reports must already exist in `data/processed/`. If required files are missing or incomplete, some dashboard sections may show warnings or incomplete information.
 
 ## Installation and Setup
 
@@ -156,7 +190,7 @@ The dashboard must be running for the local URL to work.
 - Python installed.
 - Git installed.
 - VS Code or another Python editor.
-- Access to the project files and prepared datasets.
+- Access to the project files and required datasets.
 
 ### 1. Clone the repository
 
@@ -183,54 +217,78 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-### 4. Start the dashboard
+### 4. Start a dashboard
+
+Run the inventory dashboard:
 
 ```bash
 python -m streamlit run app/inventory_dashboard.py
 ```
 
-**Note:** The dashboard expects its prepared input data to exist at the paths configured in the application. Ensure the required processed datasets are available before launching it.
+Or run the monitoring dashboard in a separate terminal:
+
+```bash
+python -m streamlit run app/monitoring_dashboard.py
+```
+
+The dashboards depend on their respective prepared datasets and report files. Ensure the required files exist under `data/processed/` before launching them.
 
 ## Project Structure
+
+The following tree shows the main project directories and application files. It is a representative structure; not every generated dataset or artifact is necessarily tracked in GitHub.
 
 ```text
 RetailPulse-AI-Customer-Analytics/
 ├── app/
-│   └── inventory_dashboard.py
+│   ├── inventory_dashboard.py
+│   └── monitoring_dashboard.py
 ├── data/
 │   ├── raw/
+│   ├── interim/
 │   └── processed/
 ├── docs/
-│   ├── images/
-│   │   └── inventory-dashboard.png
+│   ├── Images/
+│   │   ├── inventory-dashboard.png
+│   │   └── Screenshot files
 │   └── project_notes.md
-├── models/
 ├── notebooks/
+├── src/
+│   └── data/
+│       ├── ingestion.py
+│       ├── cleaning.py
+│       └── validation.py
+├── models/
 ├── requirements.txt
 └── README.md
 ```
 
-This is a representative structure. Some generated data and model artifacts may be excluded from GitHub by `.gitignore`.
-
 ## Limitations
 
 - The forecast comparison currently covers only five test months.
+- The reported forecasting metric is WAPE; the required MAPE target has not been verified.
+- The current evaluation does not establish a 30-day forecast horizon or a Prophet–LSTM ensemble.
 - Historical forecast performance does not guarantee future accuracy.
 - The source data ends in December 2011 and is not representative of current retail conditions.
 - Some transactions have missing customer IDs.
+- Exact duplicate transaction rows have been detected and require contextual review before any additional removal.
 - No recorded sales in a month do not necessarily indicate zero true demand.
 - Actual stock-on-hand levels, open purchase orders, supplier lead times, and confirmed stockout records are unavailable.
 - Inventory lead-time demand, safety stock, and reorder points use simplified assumptions.
 - Inventory risk categories are preliminary review flags, not confirmed stockout probabilities.
+- The current K-Means result selects two clusters, while the rule-based method defines five segments.
+- The churn ROC-AUC is below the project's stated target of 0.88.
+- Monitoring thresholds are heuristic; a drift alert does not, by itself, prove business impact or model degradation.
 - Project targets are goals, not achieved results unless supported by measured evaluation.
 
 ## Project Status
 
-Implemented components include data preparation, exploratory analysis, preliminary sales forecasting comparisons, RFM customer segmentation, churn model evaluation, inventory demand analysis, and an interactive Streamlit dashboard.
+Implemented components include data preparation, exploratory analysis, preliminary sales forecasting comparisons, RFM customer segmentation, churn model evaluation, inventory demand analysis, and two interactive Streamlit dashboards.
 
-The dashboard's category filters, product search, product inspection, reset behavior, and CSV download have passed manual functional checks.
+The inventory dashboard's category filters, product search, product inspection, reset behavior, and CSV download have passed manual functional checks.
 
-Further work should focus on stronger validation, automated testing, documentation, and improvements to model reliability and inventory assumptions.
+The monitoring dashboard displays existing quality, drift, history, and alert reports. Its results depend on the availability and freshness of those reports.
+
+Further work should focus on reproducible data processing, stronger model validation, automated testing, clearer execution instructions, and improvements to forecasting and inventory assumptions.
 
 ## Author
 
