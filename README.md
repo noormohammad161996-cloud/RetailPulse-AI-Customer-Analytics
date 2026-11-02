@@ -3,12 +3,25 @@
 RetailPulse is a retail analytics project developed as part of a data science internship with Zidio Development. It uses historical retail transaction data to explore sales trends, customer behavior, churn risk, demand forecasting, and inventory planning.
 ## Live Demos
 
-- **[RetailPulse Inventory Dashboard](https://retailpulse-ai-customer-analytics-jwtvbdhebg8hdsm7ynxs67.streamlit.app/)** — Explore product demand, inventory risk categories, product details, and CSV exports.
+## Live Demos
+
+- **[RetailPulse Integrated Dashboard](https://retailpulse-analytics-platform.streamlit.app/)** — Access Inventory Analysis and Country Analysis in one application, with interactive filters, charts, country-level insights, and CSV exports.
+
 - **[RetailPulse Monitoring Dashboard](https://retailpulse-ai-customer-analytics-yzgn6gbtwti5yqxx4srhzw.streamlit.app/)** — Explore data quality checks, feature drift, monitoring history, and alerts.
 
 ## Dashboard Preview
 
-The project includes two interactive Streamlit dashboards: an inventory analytics dashboard and a monitoring dashboard for data quality, feature drift, monitoring history, and alerts.
+The project includes two public Streamlit applications:
+
+1. **Integrated RetailPulse Dashboard**
+   - Inventory Analysis
+   - Country Analysis
+
+2. **Monitoring Dashboard**
+   - Data quality checks
+   - Feature drift
+   - Monitoring history
+   - Alerts
 
 ![RetailPulse Inventory Analytics Dashboard](docs/Images/inventory-dashboard.png)
 
