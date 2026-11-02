@@ -1,7 +1,6 @@
 # RetailPulse — AI-Powered Customer Analytics & Demand Forecasting
 
 RetailPulse is a retail analytics project developed as part of a data science internship with Zidio Development. It uses historical retail transaction data to explore sales trends, customer behavior, churn risk, demand forecasting, and inventory planning.
-## Live Demos
 
 ## Live Demos
 
